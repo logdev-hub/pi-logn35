@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✅ Checklist Logística N35 • Projeto Integrador - 21/05/2026 </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d6efd;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        .navbar {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-header {
+            transition: all 0.3s ease;
+        }
+        
+        .accordion-button {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .table {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.15);
+        }
+        
+        .table thead {
+            background: linear-gradient(90deg, #0d6efd, #0b5ed7);
+            color: white;
+        }
+        
+        .form-check-input:checked {
+            background-color: #198754;
+            border-color: #198754;
+        }
+        
+        .progress-bar {
+            transition: width 0.6s ease;
+        }
+        
+        .list-group-item {
+            transition: all 0.3s ease;
+        }
+        
+        .list-group-item.active {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 4px 10px;
+        }
+        
+        .search-input {
+            border-radius: 50px;
+            padding-left: 45px;
+        }
+        
+        .emoji-title {
+            font-size: 1.6rem;
+            margin-right: 12px;
+        }
+        
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.75;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <span class="emoji-title">🚚</span>
+                <h1 class="navbar-brand mb-0 fw-bold fs-3">Checklist Logística N35 - 21/05/2026 </h1>
+                <span class="badge bg-light text-primary ms-3 px-3 py-2">Projeto Integrador</span>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Progresso Geral -->
+                <div class="text-end">
+                    <small class="text-white-50 d-block mb-1">Progresso Geral</small>
+                    <div class="progress" style="width: 220px; height: 12px; border-radius: 20px;">
+                        <div id="overall-progress" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <small id="overall-percentage" class="text-white fw-bold">0% • 0/76 itens</small>
+                </div>
+                
+                <button onclick="resetAll()" class="btn btn-light btn-sm d-flex align-items-center gap-2">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Reiniciar</span>
+                </button>
+                
+                <a href="javascript:void(0)" onclick="window.print()" class="btn btn-light btn-sm d-flex align-items-center gap-2">
+                    <i class="fas fa-print"></i>
+                    <span>Imprimir / PDF</span>
+                </a>
+                
+                <div class="dropdown">
+                    <button class="btn btn-light btn-sm dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Leandro</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Exportar JSON</a></li>
+                        <li><a class="dropdown-item" href="#">Importar JSON</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" onclick="clearStorage()">Limpar todos os dados</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-4">
+        <div class="row">
+            
+            <!-- SIDEBAR - FILTROS POR PARTES -->
+            <div class="col-lg-3 col-xl-2">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0 fw-semibold">
+                            <i class="fas fa-filter me-2 text-primary"></i>
+                            Filtros por Partes
+                        </h5>
+                    </div>
+                    <div class="card-body p-3">
+                        
+                        <!-- Busca -->
+                        <div class="input-group mb-4">
+                            <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                            <input id="search-input" 
+                                   type="text" 
+                                   class="form-control search-input border-start-0" 
+                                   placeholder="🔎 Buscar item ou descrição..."
+                                   onkeyup="filterItems()">
+                        </div>
+                        
+                        <!-- Lista de seções -->
+                        <div class="list-group list-group-flush" id="section-list">
+                            <!-- JS populated -->
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- Resumo rápido -->
+                        <div class="mt-4 px-3">
+                            <h6 class="text-muted mb-3">Resumo por Parte</h6>
+                            <div id="mini-progress" class="d-flex flex-column gap-3">
+                                <!-- JS populated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CONTEÚDO PRINCIPAL -->
+            <div class="col-lg-9 col-xl-10">
+                <div id="main-content">
+                    <!-- Accordions serão gerados via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER INFO -->
+    <footer class="bg-white py-3 border-top mt-auto">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center text-muted small">
+                <div>
+                    <i class="fas fa-boxes me-1"></i> 
+                    Total de itens: <strong>76</strong> • 
+                    <span id="footer-checked">0</span> concluídos
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge bg-success">✅ UC1 a UC5 completas</span>
+                    <span class="badge bg-primary">📋 Pré-projeto + Estrutura</span>
+                    <a href="#" onclick="showProfessorValidation()" class="text-decoration-none text-primary">
+                        <i class="fas fa-chart-bar me-1"></i> Quadro de Validação do Professor
+                    </a>
+                </div>
+                <div>
+                    Feito com ❤️ para o curso de Logística • Bootstrap 5 + JS
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL - Quadro de Validação do Professor -->
+    <div class="modal fade" id="validationModal" tabindex="-1" aria-labelledby="validationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="validationModalLabel">📊 Quadro-resumo de Validação do Professor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="40%">Critério</th>
+                                <th class="text-center">Atende plenamente</th>
+                                <th class="text-center">Atende parcialmente</th>
+                                <th class="text-center">Não atende</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Coerência da proposta</td><td class="text-center"><input type="radio" name="c1"></td><td class="text-center"><input type="radio" name="c1"></td><td class="text-center"><input type="radio" name="c1"></td></tr>
+                            <tr><td>Aplicação dos conteúdos das UCs</td><td class="text-center"><input type="radio" name="c2"></td><td class="text-center"><input type="radio" name="c2"></td><td class="text-center"><input type="radio" name="c2"></td></tr>
+                            <tr><td>Organização dos processos</td><td class="text-center"><input type="radio" name="c3"></td><td class="text-center"><input type="radio" name="c3"></td><td class="text-center"><input type="radio" name="c3"></td></tr>
+                            <tr><td>Qualidade dos controles criados</td><td class="text-center"><input type="radio" name="c4"></td><td class="text-center"><input type="radio" name="c4"></td><td class="text-center"><input type="radio" name="c4"></td></tr>
+                            <tr><td>Uso adequado de indicadores</td><td class="text-center"><input type="radio" name="c5"></td><td class="text-center"><input type="radio" name="c5"></td><td class="text-center"><input type="radio" name="c5"></td></tr>
+                            <tr><td>Clareza documental e visual</td><td class="text-center"><input type="radio" name="c6"></td><td class="text-center"><input type="radio" name="c6"></td><td class="text-center"><input type="radio" name="c6"></td></tr>
+                            <tr><td>Viabilidade da solução</td><td class="text-center"><input type="radio" name="c7"></td><td class="text-center"><input type="radio" name="c7"></td><td class="text-center"><input type="radio" name="c7"></td></tr>
+                            <tr><td>Integração entre etapas logísticas</td><td class="text-center"><input type="radio" name="c8"></td><td class="text-center"><input type="radio" name="c8"></td><td class="text-center"><input type="radio" name="c8"></td></tr>
+                            <tr><td>Segurança e boas práticas</td><td class="text-center"><input type="radio" name="c9"></td><td class="text-center"><input type="radio" name="c9"></td><td class="text-center"><input type="radio" name="c9"></td></tr>
+                            <tr><td>Qualidade da apresentação final</td><td class="text-center"><input type="radio" name="c10"></td><td class="text-center"><input type="radio" name="c10"></td><td class="text-center"><input type="radio" name="c10"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-success" onclick="alert('✅ Validação salva! (simulação)')">Salvar Avaliação</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        // ====================== DADOS DAS CHECKLISTS ======================
+        const checklistsData = [
+            {
+                id: 1,
+                title: "1. PRÉ-PROJETO / VISÃO GERAL",
+                emoji: "📋",
+                color: "primary",
+                items: [
+                    { item: "Ideia de negócio/projeto", desc: "Definição clara da proposta, problema que será resolvido e público atendido" },
+                    { item: "Objetivo do projeto", desc: "Explicação do que a equipe pretende desenvolver e alcançar" },
+                    { item: "Missão, visão e valores", desc: "Identidade básica do projeto/empresa de forma coerente" },
+                    { item: "Organograma e funções", desc: "Estrutura da equipe e definição dos papéis de cada integrante" },
+                    { item: "Análise de mercado", desc: "Breve estudo de clientes, concorrentes, oportunidades e diferenciais" },
+                    { item: "Cadeia de suprimentos", desc: "Descrição da cadeia interna, imediata e ampliada" },
+                    { item: "Fornecedores e clientes", desc: "Mapeamento de fornecedores até 3ª camada e clientes até 2ª camada, quando aplicável" },
+                    { item: "Tipo de cadeia", desc: "Identificação se a cadeia é mais convencional, verticalizada ou híbrida" },
+                    { item: "Melhorias propostas", desc: "Sugestões de melhoria nos processos logísticos do projeto" },
+                    { item: "Indicadores de desempenho", desc: "Definição dos principais indicadores para acompanhamento do projeto" }
+                ]
+            },
+            {
+                id: 2,
+                title: "2. ESTRUTURA OPERACIONAL E DOCUMENTAL",
+                emoji: "📑",
+                color: "info",
+                items: [
+                    { item: "Cargos envolvidos na operação", desc: "Quais funções atuam nas etapas logísticas do projeto" },
+                    { item: "Fluxo documental", desc: "Como serão organizados arquivos e registros físicos e/ou digitais" },
+                    { item: "Documentos utilizados", desc: "Modelos ou exemplos de pedido, nota fiscal, romaneio, ficha, requisição ou equivalente" },
+                    { item: "Fluxograma geral do processo", desc: "Etapas principais do processo logístico do projeto, do início ao fim" },
+                    { item: "Sistema de controle", desc: "Planilha, formulário, sistema ou método usado para registrar movimentações" },
+                    { item: "Padronização das informações", desc: "Definição de códigos, nomes, unidades e critérios de registro" }
+                ]
+            },
+            {
+                id: 3,
+                title: "3. UC1 – RECEBIMENTO, CONFERÊNCIA E MOVIMENTAÇÃO",
+                emoji: "📦",
+                color: "success",
+                items: [
+                    { item: "Fluxo de recebimento", desc: "Etapas de entrada, conferência e liberação de materiais/produtos" },
+                    { item: "Conferência quantitativa", desc: "Verificação de quantidades recebidas" },
+                    { item: "Conferência qualitativa", desc: "Verificação de integridade, validade, especificação e condição do material" },
+                    { item: "Regularização de divergências", desc: "Procedimento para tratar faltas, avarias ou erros de recebimento" },
+                    { item: "Classificação e codificação", desc: "Critério para identificar materiais, insumos, equipamentos e produtos" },
+                    { item: "Etiquetas e identificação", desc: "Uso de etiqueta, código de barras, QR Code, RFID ou identificação manual" },
+                    { item: "Controle de entrada e saída", desc: "Registro organizado das movimentações" },
+                    { item: "Embalagens da operação", desc: "Tipos de embalagens utilizadas e suas funções" },
+                    { item: "Equipamentos de movimentação", desc: "Recursos usados para carga, descarga e transporte interno" },
+                    { item: "Unitização/desunitização", desc: "Como ocorre paletização, agrupamento ou separação de cargas" },
+                    { item: "Segurança na operação", desc: "EPIs, EPCs e cuidados básicos aplicáveis ao processo" }
+                ]
+            },
+            {
+                id: 4,
+                title: "4. UC2 – COMPRAS E SUPRIMENTOS",
+                emoji: "🛒",
+                color: "warning",
+                items: [
+                    { item: "Fluxograma de compras", desc: "Etapas da solicitação até a aquisição" },
+                    { item: "Necessidade de compra", desc: "Justificativa da compra com base no consumo ou demanda" },
+                    { item: "Modalidade de compra", desc: "Definição de compra normal, emergencial, local, importada, pública ou privada, se aplicável" },
+                    { item: "Cadastro de fornecedores", desc: "Critérios de seleção e avaliação dos fornecedores" },
+                    { item: "Negociação", desc: "Estratégia de negociação adotada pela equipe" },
+                    { item: "Ressuprimento", desc: "Definição do método: contínuo, periódico ou outro" },
+                    { item: "Previsão de demanda", desc: "Estimativa de consumo de materiais ou produtos" },
+                    { item: "Parâmetros de estoque", desc: "Estoque mínimo, máximo, segurança, ponto de pedido ou intervalo entre pedidos" },
+                    { item: "LEC", desc: "Aplicação ou explicação do Lote Econômico de Compras, se aplicável" },
+                    { item: "Procedimento de devolução", desc: "Como a equipe trataria devoluções físicas e documentais" }
+                ]
+            },
+            {
+                id: 5,
+                title: "5. UC3 – ARMAZENAGEM E ORGANIZAÇÃO DO ARMAZÉM",
+                emoji: "🏪",
+                color: "primary",
+                items: [
+                    { item: "Tipo de armazém", desc: "Definição do modelo de armazenagem adotado" },
+                    { item: "Layout do armazém", desc: "Distribuição das áreas, corredores, segurança, docas, estruturas e circulação" },
+                    { item: "Capacidade de armazenagem", desc: "Análise básica de espaço, volume e ocupação" },
+                    { item: "Embalagens armazenadas", desc: "Tipos, quantidades, pesos e volumes principais" },
+                    { item: "Pallets e estruturas", desc: "Tipos utilizados e forma de uso no projeto" },
+                    { item: "Equipamentos internos", desc: "Recursos usados para movimentação dentro da armazenagem" },
+                    { item: "Procedimentos operacionais", desc: "Fluxogramas ou descrição das rotinas da armazenagem" },
+                    { item: "Controle de materiais", desc: "Ferramentas usadas para registrar entradas, saídas e saldos" },
+                    { item: "Planejamento de inventário", desc: "Como será realizado o inventário e com qual periodicidade" },
+                    { item: "Endereçamento", desc: "Modelo adotado para localização dos itens" },
+                    { item: "Ergonomia e 5S", desc: "Cuidados com organização, limpeza, segurança e bem-estar" },
+                    { item: "Picking", desc: "Processo de separação de pedidos e critérios adotados" },
+                    { item: "Riscos ocupacionais", desc: "Identificação dos principais riscos da operação" },
+                    { item: "Custos de armazenagem", desc: "Levantamento básico de custos fixos e variáveis" }
+                ]
+            },
+            {
+                id: 6,
+                title: "6. UC4 – CONTROLE DE ESTOQUES",
+                emoji: "📦",
+                color: "success",
+                items: [
+                    { item: "Método de controle de estoque", desc: "Como será feito o acompanhamento do estoque" },
+                    { item: "Indicadores de estoque", desc: "Acurácia, giro, cobertura, rupturas, perdas ou outros" },
+                    { item: "Técnicas de controle", desc: "Aplicação de Kanban, Kardex, JIT ou outro método" },
+                    { item: "Organização física do estoque", desc: "Estrutura lógica de localização, corredores, áreas e instalações" },
+                    { item: "Layout da armazenagem", desc: "Definição de áreas de estoque, acesso, prateleiras, estruturas e zonas de risco" },
+                    { item: "Mapa de risco", desc: "Representação básica dos riscos existentes no ambiente" },
+                    { item: "Checklist de segurança", desc: "Verificação de EPIs, EPCs, sinalização e normas aplicáveis" },
+                    { item: "Reendereçamento", desc: "Procedimento para mudança de localização dos itens" },
+                    { item: "Curva ABC", desc: "Classificação dos itens por importância/valor/consumo" },
+                    { item: "Curva XYZ", desc: "Classificação dos itens por variabilidade ou criticidade" },
+                    { item: "Descarte de materiais", desc: "Procedimentos básicos para descarte correto de materiais e produtos" }
+                ]
+            },
+            {
+                id: 7,
+                title: "7. UC5 – DISTRIBUIÇÃO E EXPEDIÇÃO",
+                emoji: "🚚",
+                color: "warning",
+                items: [
+                    { item: "Canal de distribuição", desc: "Definição do canal adotado e sua justificativa" },
+                    { item: "Ciclo do pedido", desc: "Etapas do pedido até a entrega" },
+                    { item: "Nível de serviço", desc: "Meta de atendimento ao cliente" },
+                    { item: "Planejamento da distribuição", desc: "Organização do fluxo de separação, expedição e envio" },
+                    { item: "Roteirização", desc: "Critérios básicos para definição de rotas" },
+                    { item: "Consolidação de cargas", desc: "Estratégia para agrupamento e unitização" },
+                    { item: "Expedição", desc: "Procedimento de liberação e envio dos materiais/produtos" },
+                    { item: "Frota e cubagem", desc: "Noções de dimensionamento e compatibilidade de carga" },
+                    { item: "Estoques avançados", desc: "Avaliação da necessidade de apoio regional ou pontos estratégicos" },
+                    { item: "Documentos da distribuição", desc: "Romaneio, comprovantes, EDI ou documentos equivalentes" },
+                    { item: "Indicadores da distribuição", desc: "Prazo, custo, produtividade, avarias, devoluções e nível de atendimento" },
+                    { item: "Ferramentas de gestão", desc: "Uso de WMS, planilha ou outro recurso para controle" },
+                    { item: "Melhoria contínua", desc: "Aplicação de 5S, PDCA, Kaizen, Seis Sigma ou prática equivalente" }
+                ]
+            }
+        ]
+
+        // ====================== VARIÁVEIS GLOBAIS ======================
+        let currentFilter = 'all'
+        let checkedState = {}
+
+        // ====================== FUNÇÕES DE CARREGAMENTO ======================
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('checklist-log-n35')
+            if (saved) {
+                checkedState = JSON.parse(saved)
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('checklist-log-n35', JSON.stringify(checkedState))
+        }
+
+        // ====================== CÁLCULO DE PROGRESSO ======================
+        function getSectionProgress(sectionId) {
+            const section = checklistsData.find(s => s.id === sectionId)
+            if (!section) return { progress: 0, checked: 0, total: 0 }
+            
+            const total = section.items.length
+            let checked = 0
+            
+            section.items.forEach((_, index) => {
+                const key = `${sectionId}-${index}`
+                if (checkedState[key]) checked++
+            })
+            
+            return {
+                progress: Math.round((checked / total) * 100),
+                checked: checked,
+                total: total
+            }
+        }
+
+        function getOverallProgress() {
+            let totalChecked = 0
+            let totalItems = 0
+            
+            checklistsData.forEach(section => {
+                const { checked, total } = getSectionProgress(section.id)
+                totalChecked += checked
+                totalItems += total
+            })
+            
+            return {
+                progress: Math.round((totalChecked / totalItems) * 100),
+                checked: totalChecked,
+                total: totalItems
+            }
+        }
+
+        // ====================== RENDERIZAÇÃO ======================
+        function renderSidebar() {
+            const container = document.getElementById('section-list')
+            let html = `
+                <a href="#" onclick="setFilter('all'); return false" 
+                   class="list-group-item list-group-item-action d-flex align-items-center ${currentFilter === 'all' ? 'active' : ''}">
+                    <span class="me-2">🌐</span>
+                    <span class="flex-grow-1">Todas as partes (1-7)</span>
+                    <span class="badge bg-secondary rounded-pill" id="all-count">76</span>
+                </a>`
+            
+            checklistsData.forEach(section => {
+                const prog = getSectionProgress(section.id)
+                html += `
+                <a href="#" onclick="setFilter(${section.id}); return false" 
+                   class="list-group-item list-group-item-action d-flex align-items-center ${currentFilter === section.id ? 'active' : ''}">
+                    <span class="me-2">${section.emoji}</span>
+                    <span class="flex-grow-1">${section.title}</span>
+                    <span class="badge bg-${section.color} rounded-pill status-badge">${prog.progress}%</span>
+                </a>`
+            })
+            
+            container.innerHTML = html
+        }
+
+        function renderMiniProgress() {
+            const container = document.getElementById('mini-progress')
+            let html = ''
+            
+            checklistsData.forEach(section => {
+                const prog = getSectionProgress(section.id)
+                html += `
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <span class="me-2">${section.emoji}</span>
+                        <span class="small fw-medium">${section.title.split('–')[0].trim()}</span>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted">${prog.checked}/${prog.total}</small>
+                        <div class="progress mt-1" style="height: 6px; width: 90px;">
+                            <div class="progress-bar bg-${section.color}" style="width: ${prog.progress}%"></div>
+                        </div>
+                    </div>
+                </div>`
+            })
+            
+            container.innerHTML = html
+        }
+
+        function renderAccordions(filter = 'all') {
+            const container = document.getElementById('main-content')
+            let html = `<h4 class="mb-4 text-primary"><i class="fas fa-list-check me-2"></i>Checklists do Projeto Logístico</h4>`
+            
+            checklistsData.forEach(section => {
+                // Se houver filtro específico, só mostra a seção selecionada
+                if (filter !== 'all' && filter !== section.id) return
+                
+                const prog = getSectionProgress(section.id)
+                const isExpanded = filter !== 'all' ? 'show' : ''
+                
+                html += `
+                <div class="accordion mb-4" id="accordion-${section.id}">
+                    <div class="accordion-item shadow-sm">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button ${isExpanded ? '' : 'collapsed'} section-header" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#collapse-${section.id}">
+                                <span class="emoji-title">${section.emoji}</span>
+                                ${section.title}
+                                <span class="ms-auto badge bg-${section.color} status-badge">${prog.progress}% • ${prog.checked}/${prog.total}</span>
+                            </button>
+                        </h2>
+                        <div id="collapse-${section.id}" class="accordion-collapse collapse ${isExpanded}">
+                            <div class="accordion-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th width="80" class="text-center">Status</th>
+                                                <th>Item</th>
+                                                <th>O que a equipe deve apresentar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`
+                
+                section.items.forEach((item, index) => {
+                    const key = `${section.id}-${index}`
+                    const checked = checkedState[key] ? 'checked' : ''
+                    const completedClass = checkedState[key] ? 'completed' : ''
+                    
+                    html += `
+                        <tr class="item-row" data-section="${section.id}" data-text="${item.item.toLowerCase()} ${item.desc.toLowerCase()}">
+                            <td class="text-center">
+                                <input type="checkbox" class="form-check-input checklist-check" 
+                                       id="check-${key}" ${checked}
+                                       onchange="toggleCheck(${section.id}, ${index})">
+                            </td>
+                            <td class="fw-medium ${completedClass}">${item.item}</td>
+                            <td class="${completedClass}">${item.desc}</td>
+                        </tr>`
+                })
+                
+                html += `
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+            })
+            
+            // Se filtro específico e nenhum resultado
+            if (filter !== 'all' && !html.includes('accordion-item')) {
+                html += `<div class="alert alert-info text-center py-5">
+                    <h5>Nenhuma seção selecionada</h5>
+                    <p>Escolha uma parte no menu lateral.</p>
+                </div>`
+            }
+            
+            container.innerHTML = html
+        }
+
+        // ====================== INTERAÇÕES ======================
+        function toggleCheck(sectionId, itemIndex) {
+            const key = `${sectionId}-${itemIndex}`
+            checkedState[key] = !checkedState[key]
+            saveToLocalStorage()
+            
+            // Atualiza tudo
+            updateAllProgress()
+            renderSidebar()
+            renderMiniProgress()
+            
+            // Se estiver com filtro ativo, re-renderiza apenas a seção
+            if (currentFilter !== 'all') {
+                renderAccordions(currentFilter)
+            } else {
+                // Atualiza apenas o badge da seção aberta
+                const prog = getSectionProgress(sectionId)
+                const badge = document.querySelector(`#collapse-${sectionId}`).parentElement.querySelector('.badge')
+                if (badge) badge.textContent = `${prog.progress}% • ${prog.checked}/${prog.total}`
+            }
+        }
+
+        function updateAllProgress() {
+            const overall = getOverallProgress()
+            const progressBar = document.getElementById('overall-progress')
+            progressBar.style.width = `${overall.progress}%`
+            progressBar.setAttribute('aria-valuenow', overall.progress)
+            
+            document.getElementById('overall-percentage').innerHTML = 
+                `${overall.progress}% • <strong>${overall.checked}/${overall.total}</strong> itens`
+            
+            document.getElementById('footer-checked').textContent = overall.checked
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter
+            renderSidebar()
+            renderAccordions(filter)
+            
+            // Se filtro único, o accordion abre automaticamente
+            if (filter !== 'all') {
+                setTimeout(() => {
+                    const collapse = document.getElementById(`collapse-${filter}`)
+                    if (collapse && !collapse.classList.contains('show')) {
+                        new bootstrap.Collapse(collapse, { toggle: true })
+                    }
+                }, 100)
+            }
+        }
+
+        function filterItems() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim()
+            
+            // Se busca vazia, mostra tudo conforme filtro atual
+            if (!query) {
+                renderAccordions(currentFilter)
+                return
+            }
+            
+            const rows = document.querySelectorAll('.item-row')
+            let visibleSections = new Set()
+            
+            rows.forEach(row => {
+                if (row.getAttribute('data-text').includes(query)) {
+                    row.style.display = ''
+                    visibleSections.add(parseInt(row.getAttribute('data-section')))
+                } else {
+                    row.style.display = 'none'
+                }
+            })
+            
+            // Esconde accordions que não têm itens visíveis
+            checklistsData.forEach(section => {
+                const accordion = document.getElementById(`accordion-${section.id}`)
+                if (accordion) {
+                    if (currentFilter === 'all' || currentFilter === section.id) {
+                        accordion.style.display = visibleSections.has(section.id) ? '' : 'none'
+                    }
+                }
+            })
+        }
+
+        function resetAll() {
+            if (confirm('🔄 Deseja reiniciar TODOS os checkboxes?')) {
+                checkedState = {}
+                saveToLocalStorage()
+                renderAccordions(currentFilter)
+                updateAllProgress()
+                renderSidebar()
+                renderMiniProgress()
+            }
+        }
+
+        function clearStorage() {
+            if (confirm('🗑️ Limpar TODOS os dados salvos permanentemente?')) {
+                localStorage.removeItem('checklist-log-n35')
+                checkedState = {}
+                location.reload()
+            }
+        }
+
+        function showProfessorValidation() {
+            const modal = new bootstrap.Modal(document.getElementById('validationModal'))
+            modal.show()
+        }
+
+        // ====================== INICIALIZAÇÃO ======================
+        window.onload = function() {
+            loadFromLocalStorage()
+            
+            // Renderiza tudo
+            renderSidebar()
+            renderMiniProgress()
+            renderAccordions('all')
+            updateAllProgress()
+            
+            console.log('%c✅ Checklist Logística N35 carregada com sucesso!', 'color:#0d6efd; font-size:14px; font-weight:bold')
+            console.log('Total de itens:', checklistsData.reduce((acc, s) => acc + s.items.length, 0))
+        }
+    </script>
+</body>
+</html>
